@@ -43,3 +43,78 @@ Print the answer as a part of a message::
 to other fixed lines in Bangalore."
 The percentage should have 2 decimal digits
 """
+
+
+def tel_nums_called_by_people_in_bangalore(call_list):
+    output = set()
+    for item in call_list:
+        num1, num2, call_time, call_duration = item
+        if is_number_from_bangalore(num1):
+            output.add(num2)
+    return output
+
+
+def fetch_area_code(tel_num):
+    if is_fixed_line(tel_num):
+        return tel_num[:5]
+    if is_mobile_phone(tel_num):
+        return tel_num[:4]
+    return ""
+
+
+def is_number_from_bangalore(tel_num):
+    if tel_num[:5] == "(080)":
+        return True
+    return False
+
+
+def is_fixed_line(tel_num):
+    if tel_num[0] == "(" and tel_num[4] == ")":
+        return True
+    return False
+
+
+def is_mobile_phone(tel_num):
+    if tel_num[5] == " ":
+        return True
+    return False
+
+
+def test():
+    # print(tel_nums_called_by_people_in_bangalore(calls))
+    assert is_mobile_phone('74064 33807') == True
+    assert is_mobile_phone('(040)4 33807') == False
+    assert is_fixed_line('74064 33807') == False
+    assert is_fixed_line('(040)4 33807') == True
+    pass
+
+
+test()
+
+area_codes = set()
+tel_numbers = tel_nums_called_by_people_in_bangalore(calls)
+for tel_num in tel_numbers:
+    area_code = fetch_area_code(tel_num)
+    if area_code != "":
+        area_codes.add(area_code)
+
+
+print("The numbers called by people in Bangalore have codes:")
+for area_code in sorted(area_codes):
+    print(area_code)
+
+
+all_calls_from_bangalore = []
+all_calls_to_fixed_line = []
+for call in calls:
+    num1, num2, time, duration = call
+    if is_number_from_bangalore(num1):
+        all_calls_from_bangalore.append(call)
+
+        if is_number_from_bangalore(num2):
+            all_calls_to_fixed_line.append(call)
+
+
+percentage = format(len(all_calls_to_fixed_line)/len(all_calls_from_bangalore) * 100, '.2f')
+print("{} percent of calls from fixed lines in Bangalore are calls to other fixed lines in Bangalore.".format(percentage))
+
